@@ -4,13 +4,6 @@ let winner = document.querySelector(".winner");
 let hint = document.querySelector(".hintText");
 let turnText = document.querySelector(".whosTurn");
 let resetBtn = document.querySelector("#reset");
-let menu = document.querySelector(".menu");
-let playWithCompBtn = document.querySelector("#playComputer");
-let playWithHumanBtn = document.querySelector("#playHuman");
-let humanVsComputerContainer = document.querySelector(
-  ".humanVsComputerContainer",
-);
-let humanVsHumanContainer = document.querySelector(".humanVsHumanContainer");
 
 let compAttemptText = document.querySelector("#compAttempt");
 let humanAttemptText = document.querySelector("#humanAttempt");
@@ -18,26 +11,9 @@ let humanAttemptText = document.querySelector("#humanAttempt");
 let compGuessList = document.querySelector(".compGuessList");
 let humanGuessList = document.querySelector(".humanGuessList");
 
-humanVsComputerContainer.style.display = "none";
-humanVsHumanContainer.style.display = "none";
+let startGameBtn = document.querySelector("#startGameBtn");
 
 
-playWithCompBtn.addEventListener("click", () => {
-  menu.style.display = "none";
-  humanVsComputerContainer.style.display = "block";
-  startWithComputer();
-});
-
-playWithHumanBtn.addEventListener("click", () => {
-  menu.style.display = "none";
-  humanVsHumanContainer.style.display = "block";
-});
-
-function showMenu() {
-  menu.style.display = "block";
-  humanVsComputerContainer.style.display = "none";
-  humanVsHumanContainer.style.display = "none";
-}
 
 let compSecret;
 let humanSecret;
@@ -49,6 +25,11 @@ let compAttempt;
 
 let compGuesses;
 let humanGuesses;
+
+let low = 1;
+let high = 100;
+
+startGameBtn.addEventListener("click",startGame);
 
 function getHumanSecret() {
   let humanSecret = Number(
@@ -70,43 +51,12 @@ function getCompSecret() {
   return compSecret;
 }
 
-function startWithComputer() {
+function startGame() {
   resetVariables();
   resetUI();
   compSecret = getCompSecret();
   humanSecret = getHumanSecret();
 }
-
-guessBtn.addEventListener("click", () => {
-  let userGuesses = Number(userInp.value);
-
-  if (userGuesses > 100 || userGuesses < 1 || isNaN(userGuesses)) {
-    alert("Enter Number between 1 to 100");
-    return;
-  }
-  if (userTurn) {
-    if (humanGuesses.includes(userGuesses)) {
-      alert("Already guessed!");
-      return;
-    }
-
-    let won = userTurnGame(userGuesses);
-
-    if (won) return;
-
-    userTurn = false;
-    turnText.innerText = "Do Not Type -> COMPUTER TURN";
-  }
-
-  setTimeout(() => {
-    if (userTurn === false) {
-      compTurnGame();
-      userTurn = true;
-      turnText.innerText = "Your TURN";
-    }
-  }, 2000);
-  userInp.value = "";
-});
 
 function isGameOver(msg) {
   winner.innerText = msg;
@@ -172,19 +122,11 @@ function resetVariables(){
   compAttempt = 0;
 }
 
-
 function reset() {
   resetVariables();
   resetUI();
-  showMenu();
 }
 
-resetBtn.addEventListener("click", () => {
-  reset();
-});
-
-let low = 1;
-let high = 100;
 function compTurnGame() {
   if (compAttempt === 5) {
     alert(`Computer's Attempt are Over Human secret number was ${humanSecret}`);
@@ -210,3 +152,39 @@ function compTurnGame() {
 
   userTurn = true;
 }
+
+resetBtn.addEventListener("click", () => {
+  reset();
+});
+
+guessBtn.addEventListener("click", () => {
+  let userGuesses = Number(userInp.value);
+
+  if (userGuesses > 100 || userGuesses < 1 || isNaN(userGuesses)) {
+    alert("Enter Number between 1 to 100");
+    return;
+  }
+  if (userTurn) {
+    if (humanGuesses.includes(userGuesses)) {
+      alert("Already guessed!");
+      return;
+    }
+
+    let won = userTurnGame(userGuesses);
+
+    if (won) return;
+
+    userTurn = false;
+    turnText.innerText = "Do Not Type -> COMPUTER TURN";
+  }
+
+  setTimeout(() => {
+    if (userTurn === false) {
+      compTurnGame();
+      userTurn = true;
+      turnText.innerText = "Your TURN";
+    }
+  }, 2000);
+  userInp.value = "";
+});
+
